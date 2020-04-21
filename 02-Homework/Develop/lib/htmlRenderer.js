@@ -7,7 +7,7 @@ const render = employees => {
   const html = [];
 
   html.push(employees
-    .filter(employee => employee.getRole() === "Manager")
+    .filter(employee => employee.getRole() === "Manager") // filter runs a for loop, which pushes the current element into a separate array
     .map(manager => renderManager(manager))
   );
   html.push(employees

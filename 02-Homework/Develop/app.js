@@ -10,46 +10,59 @@ const outputPath = path.join(OUTPUT_DIR, "team.html");
 const PORT = process.env.PORT || 7000;
 
 const render = require("./lib/htmlRenderer");
-
+render (roster)
 const roster = [];
+
+function askCorrectQuestion(role) {
+    let question
+    if (role === "intern") {
+        question = "What is the intern's school name?"
+    } else if (role === "engineer") {
+        question = "What is your GitHub username?"
+    } else if (role === "manager") {
+        question = "What is your office number?"
+    }
+    inquirer.prompt([
+        {
+            type: "input",
+            message: question,
+            name: "personalInfo"
+        }
+    ])
+    .then(function(answer) {
+        console.log(answer)
+    })
+}
 
 const intake = [
     {
         type: "input",
-        message: "Enter the team member name",
+        message: "Enter the team member name:",
         name: "name"
     },
     {
-        type: "input",
-        message: "Enter the team member role",
+        type: "list",
+        message: "Enter the team member role:",
+        choices: ["intern", "engineer", "manager"],
         name: "role"
     },
     {
         type: "input",
-        message: "Enter the team member GitHub username",
-        name: "username"
-    },
-    {
-        type: "input",
-        message: "Enter the team member email address",
+        message: "Enter the team member email address:",
         name: "email"
     },
     {
         type: "input",
-        message: "Enter the team member ID number",
+        message: "Enter the team member ID number:",
         name: "id"
-    },
-    {
-        type: "input",
-        message: "Enter the team member office nember",
-        name: "office"
     }
 ];
 
 function generateRoster() {
     inquirer.prompt(intake)
         .then(response => {
-            console.log(response.data)
+            console.log(response)
+            askCorrectQuestion(response.role)
         })
         .catch(error => {
             console.log(error)
