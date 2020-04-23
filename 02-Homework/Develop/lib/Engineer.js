@@ -14,5 +14,5 @@ class Engineer extends Employee {
     }
 }
 
-let engineer = new Engineer("employee", "yahoo", "skydiver", "id", "github")
+let engineer = new Engineer("employee", "email", "role", "id", "github")
 console.log(engineer.getEmail())

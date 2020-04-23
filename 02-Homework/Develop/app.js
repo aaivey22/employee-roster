@@ -10,27 +10,32 @@ const outputPath = path.join(OUTPUT_DIR, "team.html");
 const PORT = process.env.PORT || 7000;
 
 const render = require("./lib/htmlRenderer");
-render (roster)
 const roster = [];
+// render (roster)
 
-function askCorrectQuestion(role) {
+function askCorrectQuestion(response) {
     let question
-    if (role === "intern") {
+    if (response.role === "intern") {
         question = "What is the intern's school name?"
-    } else if (role === "engineer") {
-        question = "What is your GitHub username?"
-    } else if (role === "manager") {
-        question = "What is your office number?"
+    } else if (response.role === "engineer") {
+        question = "What is the engineer's GitHub username?"
+    } else if (response.role === "manager") {
+        question = "What is the manager's office number?"
     }
     inquirer.prompt([
         {
             type: "input",
             message: question,
-            name: "personalInfo"
+            name: "uniqueInfo"
         }
     ])
     .then(function(answer) {
-        console.log(answer)
+        console.log(answer.uniqueInfo)
+        if (response.role === "intern") {
+            let intern = new Intern(response.name, response.email, response.role, response.id, answer.uniqueInfo)
+            console.log(intern);
+
+        }
     })
 }
 
@@ -62,7 +67,7 @@ function generateRoster() {
     inquirer.prompt(intake)
         .then(response => {
             console.log(response)
-            askCorrectQuestion(response.role)
+            askCorrectQuestion(response)
         })
         .catch(error => {
             console.log(error)
