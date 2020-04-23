@@ -16,3 +16,5 @@ class Engineer extends Employee {
 
 let engineer = new Engineer("employee", "email", "role", "id", "github")
 console.log(engineer.getEmail())
+
+module.exports = Engineer

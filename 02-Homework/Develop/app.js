@@ -15,11 +15,11 @@ const roster = [];
 
 function askCorrectQuestion(response) {
     let question
-    if (response.role === "intern") {
+    if (response.role === "Intern") {
         question = "What is the intern's school name?"
-    } else if (response.role === "engineer") {
+    } else if (response.role === "Engineer") {
         question = "What is the engineer's GitHub username?"
-    } else if (response.role === "manager") {
+    } else if (response.role === "Manager") {
         question = "What is the manager's office number?"
     }
     inquirer.prompt([
@@ -29,14 +29,27 @@ function askCorrectQuestion(response) {
             name: "uniqueInfo"
         }
     ])
-    .then(function(answer) {
-        console.log(answer.uniqueInfo)
-        if (response.role === "intern") {
-            let intern = new Intern(response.name, response.email, response.role, response.id, answer.uniqueInfo)
-            console.log(intern);
+        .then(function (answer) {
+            console.log(answer.uniqueInfo)
+            if (response.role === "Intern") {
+                let intern = new Intern(response.name, response.email, response.role, response.id, answer.uniqueInfo)
+                console.log(intern);
+                roster.push(intern)
+                console.log(roster)
+            } else if (response.role === "Engineer") {
+                let engineer = new Engineer(response.name, response.email, response.role, response.id, answer.uniqueInfo)
+                console.log(engineer)
+                roster.push(engineer)
 
-        }
-    })
+            } else if (response.role === "Manager") {
+                let manager = new Manager(response.name, response.email, response.role, response.id, answer.uniqueInfo)
+                console.log(manager)
+                roster.push(manager)
+
+            }
+            newEmployee() // Calling function to ask if user has another employee to add
+        })
+
 }
 
 const intake = [
@@ -48,7 +61,7 @@ const intake = [
     {
         type: "list",
         message: "Enter the team member role:",
-        choices: ["intern", "engineer", "manager"],
+        choices: ["Intern", "Engineer", "Manager"],
         name: "role"
     },
     {
@@ -62,6 +75,26 @@ const intake = [
         name: "id"
     }
 ];
+const addIntake = [
+    {
+        type: "confirm",
+        message: "Do you have another team member to add?",
+        name: "addIntake"
+    }
+]
+
+function newEmployee() {
+    inquirer.prompt(addIntake)
+    .then(response => {
+        console.log(response)
+        if(response.addIntake) {
+            generateRoster()
+        } else {
+            render(roster)
+            console.log(render(roster))
+        }
+    })
+}
 
 function generateRoster() {
     inquirer.prompt(intake)
