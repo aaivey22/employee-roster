@@ -3,17 +3,19 @@ var Employee = require("./Employee");
 // creating a subclass based on the parent "Employee"
 class Manager extends Employee {
     //creating a new constructor with paramaters
-    constructor(name, email, role, id, office) {
+    constructor(name, email, id, officeNumber) {
         // super links and sets the values of the parent constructor
-        super(name, email, role, id) //super enables the connection to the parent constructor
-        this.office = office
+        super(name, email, id) //super enables the connection to the parent constructor
+        this.officeNumber = officeNumber
     }
     getOfficeNumber() { // method to retrieve the username value
-        return this.office
+        return this.officeNumber
+    }
+    getRole() {
+        return "Manager";
     }
 }
 
-let manager = new Manager("employee", "email", "role", "id", "github")
 // console.log(manager.getEmail())
 
 module.exports = Manager;

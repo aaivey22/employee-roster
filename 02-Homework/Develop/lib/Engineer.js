@@ -20,17 +20,20 @@ const api = {
 
 class Engineer extends Employee {
     //creating a new constructor with paramaters
-    constructor(name, email, role, id, username) {
+    constructor(name, email, id, username) {
         // super links and sets the values of the parent constructor
-        super(name, email, role, id) //super enables the connection to the parent constructor
+        super(name, email, id) //super enables the connection to the parent constructor
         this.api = username
     }
     getUserName() { // method to retrieve the username value
         return this.username
     }
+    getRole() {
+        return "Engineer";
+    }
 }
 
-let engineer = new Engineer("employee", "email", "role", "id", "username")
+// let engineer = new Engineer("employee", "email", "role", "id", "github")
 // console.log(engineer.getEmail())
 
 module.exports = Engineer;

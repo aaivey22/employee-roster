@@ -52,13 +52,14 @@ function buildRoster() {
         {
             type: "input",
             message: "What is the Manager's office number?",
-            name: "office",
+            name: "officeNumber",
             when: function (response) {
                 return response.role === "Manager"
             }
         }
 
     ]).then((response) => {
+        console.log("new member created in roster");
         const addMembers = () => {
             inquirer
                 .prompt([
@@ -73,33 +74,35 @@ function buildRoster() {
                         console.log("ok, let's add some more members..");
                         buildRoster();
                     } else {
-                        const completedRoster = render(roster);
-                        fs.writeFile(outputPath, completedRoster, function (err) {
+                        render(roster);
+                        fs.writeFile(outputPath, roster, function (err) {
                             if (err) {
                                 console.log(err);
                             } else {
                                 console.log("roster generated in output folder");
+                                console.log(render (roster));
+
                             }
                         });
                     }
                 });
         }
+        //creating a new instance of the intern class with the values which will then become the paramters inside of the constructor
         if (response.role === "Intern") {
-            const newIntern = new Intern(response.name, response.id, response.email, response.school);
-            roster.push(newIntern);
+            let intern = new Intern(response.name, response.id, response.email, response.school);
+            roster.push(intern);
             addMembers();
         } else if (response.role === "Engineer") {
-            const newEngineer = new Engineer(response.name, response.id, response.email, response.github);
-            roster.push(newEngineer);
+            let engineer = new Engineer(response.name, response.id, response.email, response.github);
+            roster.push(engineer);
             addMembers();
         } else {
-            const newManager = new Manager(response.name, response.id, response.email, response.office);
-            roster.push(newManager);
+            let manager = new Manager(response.name, response.id, response.email, response.officeNumber);
+            roster.push(manager);
             addMembers();
         }
 
-    })
-        .catch((err) => console.log(err));
+    }).catch((err) => console.log(err));
 
 };
 
