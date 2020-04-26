@@ -4,110 +4,106 @@ const Intern = require("./lib/Intern");
 const inquirer = require("inquirer");
 const path = require("path");
 const fs = require("fs");
-
 const OUTPUT_DIR = path.resolve(__dirname, "output");
 const outputPath = path.join(OUTPUT_DIR, "team.html");
-const PORT = process.env.PORT || 7000;
-
+// const PORT = process.env.PORT || 7000;
 const render = require("./lib/htmlRenderer");
 const roster = [];
-// render (roster)
 
-function askCorrectQuestion(response) {
-    let question
-    if (response.role === "Intern") {
-        question = "What is the intern's school name?"
-    } else if (response.role === "Engineer") {
-        question = "What is the engineer's GitHub username?"
-    } else if (response.role === "Manager") {
-        question = "What is the manager's office number?"
-    }
+function buildRoster() {
     inquirer.prompt([
         {
             type: "input",
-            message: question,
-            name: "uniqueInfo"
-        }
-    ])
-        .then(function (answer) {
-            console.log(answer.uniqueInfo)
-            if (response.role === "Intern") {
-                let intern = new Intern(response.name, response.email, response.role, response.id, answer.uniqueInfo)
-                console.log(intern);
-                roster.push(intern)
-                console.log(roster)
-            } else if (response.role === "Engineer") {
-                let engineer = new Engineer(response.name, response.email, response.role, response.id, answer.uniqueInfo)
-                console.log(engineer)
-                roster.push(engineer)
-
-            } else if (response.role === "Manager") {
-                let manager = new Manager(response.name, response.email, response.role, response.id, answer.uniqueInfo)
-                console.log(manager)
-                roster.push(manager)
-
+            message: "Enter the team member name:",
+            name: "name"
+        },
+        {
+            type: "input",
+            message: "Enter the team member email address:",
+            name: "email"
+        },
+        {
+            type: "input",
+            message: "Enter the team member ID number:",
+            name: "id"
+        },
+        {
+            type: "list",
+            message: "Select the team member role:",
+            choices: ["Intern", "Engineer", "Manager"],
+            name: "role"
+        },
+        {
+            type: "input",
+            message: "What is the Intern's school name?",
+            name: "school",
+            when: function (response) {
+                return response.role === "Intern"
             }
-            newEmployee() // Calling function to ask if user has another employee to add
-        })
-
-}
-
-const intake = [
-    {
-        type: "input",
-        message: "Enter the team member name:",
-        name: "name"
-    },
-    {
-        type: "list",
-        message: "Enter the team member role:",
-        choices: ["Intern", "Engineer", "Manager"],
-        name: "role"
-    },
-    {
-        type: "input",
-        message: "Enter the team member email address:",
-        name: "email"
-    },
-    {
-        type: "input",
-        message: "Enter the team member ID number:",
-        name: "id"
-    }
-];
-const addIntake = [
-    {
-        type: "confirm",
-        message: "Do you have another team member to add?",
-        name: "addIntake"
-    }
-]
-
-function newEmployee() {
-    inquirer.prompt(addIntake)
-    .then(response => {
-        console.log(response)
-        if(response.addIntake) {
-            generateRoster()
-        } else {
-            render(roster)
-            console.log(render(roster))
+        },
+        {
+            type: "input",
+            message: "What is the Engineer's GitHub name?",
+            name: "github",
+            when: function (response) {
+                return response.role === "Engineer"
+            }
+        },
+        {
+            type: "input",
+            message: "What is the Manager's office number?",
+            name: "office",
+            when: function (response) {
+                return response.role === "Manager"
+            }
         }
-    })
-}
 
-function generateRoster() {
-    inquirer.prompt(intake)
-        .then(response => {
-            console.log(response)
-            askCorrectQuestion(response)
-        })
-        .catch(error => {
-            console.log(error)
-        })
+    ]).then((response) => {
+        const addMembers = () => {
+            inquirer
+                .prompt([
+                    {
+                        type: "list",
+                        message: "What next?",
+                        choices: ["Add more members to roster", "Generate Roster"],
+                        name: "addMembers"
+                    }
+                ]).then((response) => {
+                    if (response.addMembers === "Add more members to roster") {
+                        console.log("ok, let's add some more members..");
+                        buildRoster();
+                    } else {
+                        const completedRoster = render(roster);
+                        fs.writeFile(outputPath, completedRoster, function (err) {
+                            if (err) {
+                                console.log(err);
+                            } else {
+                                console.log("roster generated in output folder");
+                            }
+                        });
+                    }
+                });
+        }
+        if (response.role === "Intern") {
+            const newIntern = new Intern(response.name, response.id, response.email, response.school);
+            roster.push(newIntern);
+            addMembers();
+        } else if (response.role === "Engineer") {
+            const newEngineer = new Engineer(response.name, response.id, response.email, response.github);
+            roster.push(newEngineer);
+            addMembers();
+        } else {
+            const newManager = new Manager(response.name, response.id, response.email, response.office);
+            roster.push(newManager);
+            addMembers();
+        }
+
+    })
+        .catch((err) => console.log(err));
+
 };
 
-generateRoster();
+buildRoster();
 
 // Write code to use inquirer to gather information about the development team members,
 // and to create objects for each team member (using the correct classes as blueprints!)

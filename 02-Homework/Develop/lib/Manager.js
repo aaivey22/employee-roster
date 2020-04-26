@@ -14,6 +14,6 @@ class Manager extends Employee {
 }
 
 let manager = new Manager("employee", "email", "role", "id", "github")
-console.log(manager.getEmail())
+// console.log(manager.getEmail())
 
 module.exports = Manager;
