@@ -6,8 +6,8 @@ const path = require("path");
 const fs = require("fs");
 const OUTPUT_DIR = path.resolve(__dirname, "output");
 const outputPath = path.join(OUTPUT_DIR, "team.html");
-// const PORT = process.env.PORT || 7000;
 const render = require("./lib/htmlRenderer");
+
 const roster = [];
 
 function buildRoster() {
@@ -16,17 +16,35 @@ function buildRoster() {
             {
                 type: "input",
                 message: "Enter the team member name:",
-                name: "name"
+                name: "name",
+                validate: function(res) {
+                    if (res.trim() === ""){
+                        console.log("Name is invalid, try again.")
+                    }
+                    return res.trim() !=="";
+                }
             },
             {
                 type: "input",
                 message: "Enter the team member email address:",
-                name: "email"
+                name: "email",
+                validate: function(res) {
+                    if (res.trim() === ""){
+                        console.log("Email is invalid, try again.")
+                    }
+                    return res.trim() !=="";
+                }
             },
             {
                 type: "input",
                 message: "Enter the team member ID number:",
-                name: "id"
+                name: "id",
+                validate: function(res) {
+                    if (res.trim() === ""){
+                        console.log("ID is invalid, try again.")
+                    }
+                    return res.trim() !=="";
+                }
             },
             {
                 type: "list",
@@ -40,6 +58,12 @@ function buildRoster() {
                 name: "school",
                 when: function (res) {
                     return res.role === "Intern"
+                },
+                validate: function(res) {
+                    if (res.trim() === ""){
+                        console.log("School name is invalid, try again.")
+                    }
+                    return res.trim() !=="";
                 }
             },
             {
@@ -48,6 +72,12 @@ function buildRoster() {
                 name: "github",
                 when: function (res) {
                     return res.role === "Engineer"
+                },
+                validate: function(res) {
+                    if (res.trim() === ""){
+                        console.log("GitHub username is invalid, try again.")
+                    }
+                    return res.trim() !=="";
                 }
             },
             {
@@ -56,6 +86,12 @@ function buildRoster() {
                 name: "officeNumber",
                 when: function (res) {
                     return res.role === "Manager"
+                },
+                validate: function(res) {
+                    if (res.trim() === ""){
+                        console.log("Office number is invalid, try again.")
+                    }
+                    return res.trim() !=="";
                 }
             }
 
