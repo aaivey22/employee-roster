@@ -11,98 +11,99 @@ const render = require("./lib/htmlRenderer");
 const roster = [];
 
 function buildRoster() {
-    inquirer.prompt([
-        {
-            type: "input",
-            message: "Enter the team member name:",
-            name: "name"
-        },
-        {
-            type: "input",
-            message: "Enter the team member email address:",
-            name: "email"
-        },
-        {
-            type: "input",
-            message: "Enter the team member ID number:",
-            name: "id"
-        },
-        {
-            type: "list",
-            message: "Select the team member role:",
-            choices: ["Intern", "Engineer", "Manager"],
-            name: "role"
-        },
-        {
-            type: "input",
-            message: "What is the Intern's school name?",
-            name: "school",
-            when: function (response) {
-                return response.role === "Intern"
+    inquirer
+        .prompt([
+            {
+                type: "input",
+                message: "Enter the team member name:",
+                name: "name"
+            },
+            {
+                type: "input",
+                message: "Enter the team member email address:",
+                name: "email"
+            },
+            {
+                type: "input",
+                message: "Enter the team member ID number:",
+                name: "id"
+            },
+            {
+                type: "list",
+                message: "Select the team member role:",
+                choices: ["Intern", "Engineer", "Manager"],
+                name: "role"
+            },
+            {
+                type: "input",
+                message: "What is the Intern's school name?",
+                name: "school",
+                when: function (res) {
+                    return res.role === "Intern"
+                }
+            },
+            {
+                type: "input",
+                message: "What is the Engineer's GitHub name?",
+                name: "github",
+                when: function (res) {
+                    return res.role === "Engineer"
+                }
+            },
+            {
+                type: "input",
+                message: "What is the Manager's office number?",
+                name: "officeNumber",
+                when: function (res) {
+                    return res.role === "Manager"
+                }
             }
-        },
-        {
-            type: "input",
-            message: "What is the Engineer's GitHub name?",
-            name: "github",
-            when: function (response) {
-                return response.role === "Engineer"
+
+        ]).then((response) => {
+            console.log("new member created in roster");
+            const addMembers = () => {
+                inquirer
+                    .prompt([
+                        {
+                            type: "list",
+                            message: "What next?",
+                            choices: ["Add more members to roster", "Generate Roster"],
+                            name: "addMembers"
+                        }
+                    ]).then((response) => {
+                        if (response.addMembers === "Add more members to roster") {
+                            console.log("ok, let's add some more members..");
+                            buildRoster();
+                        } else {
+                            const generateRoster = render(roster);
+                            fs.writeFile(outputPath, generateRoster, function (err) {
+                                if (err) {
+                                    console.log(err);
+                                } else {
+                                    console.log("roster generated in output folder");
+                                    console.log(generateRoster);
+
+                                }
+                            });
+                        }
+                    });
             }
-        },
-        {
-            type: "input",
-            message: "What is the Manager's office number?",
-            name: "officeNumber",
-            when: function (response) {
-                return response.role === "Manager"
+            //creating a new instance of the intern class with the values which will then become the paramters inside of the constructor
+            if (response.role === "Intern") {
+                let newIntern = new Intern(response.name, response.email, response.id, response.school);
+                roster.push(newIntern);
+                addMembers();
+            } else if (response.role === "Engineer") {
+                let newEngineer = new Engineer(response.name, response.email, response.id, response.github);
+                roster.push(newEngineer);
+                addMembers();
+            } else {
+                let newManager = new Manager(response.name, response.email, response.id, response.officeNumber);
+                roster.push(newManager);
+                addMembers();
             }
-        }
 
-    ]).then((response) => {
-        console.log("new member created in roster");
-        const addMembers = () => {
-            inquirer
-                .prompt([
-                    {
-                        type: "list",
-                        message: "What next?",
-                        choices: ["Add more members to roster", "Generate Roster"],
-                        name: "addMembers"
-                    }
-                ]).then((response) => {
-                    if (response.addMembers === "Add more members to roster") {
-                        console.log("ok, let's add some more members..");
-                        buildRoster();
-                    } else {
-                        render(roster);
-                        fs.writeFile(outputPath, roster, function (err) {
-                            if (err) {
-                                console.log(err);
-                            } else {
-                                console.log("roster generated in output folder");
-                                console.log(render (roster));
-
-                            }
-                        });
-                    }
-                });
-        }
-        //creating a new instance of the intern class with the values which will then become the paramters inside of the constructor
-        if (response.role === "Intern") {
-            let intern = new Intern(response.name, response.id, response.email, response.school);
-            roster.push(intern);
-            addMembers();
-        } else if (response.role === "Engineer") {
-            let engineer = new Engineer(response.name, response.id, response.email, response.github);
-            roster.push(engineer);
-            addMembers();
-        } else {
-            let manager = new Manager(response.name, response.id, response.email, response.officeNumber);
-            roster.push(manager);
-            addMembers();
-        }
-
-    }).catch((err) => console.log(err));
+        }).catch((err) => console.log(err));
 
 };
 
