@@ -8,7 +8,13 @@ const OUTPUT_DIR = path.resolve(__dirname, "output");
 const outputPath = path.join(OUTPUT_DIR, "team.html");
 const render = require("./lib/htmlRenderer");
 
+// The user data is the user responses from the inquirer-prompts and are pushed into the "roster" array at the end of the buildRoster() beginning.
+
 const roster = [];
+
+// Each question is made up of an object which defines the name of the field, its type, and the displayed "message".
+// Validate: is an obj-prop and method used here to make responding with a value a user-requirement.
+// When: is an obj-prop and method used to execute a block of code specific to the user's chosen role.
 
 function buildRoster() {
     inquirer
@@ -118,13 +124,18 @@ function buildRoster() {
                                 } else {
                                     console.log("roster generated in output folder");
                                     console.log(generateRoster);
-
                                 }
                             });
                         }
                     });
             }
-            //creating a new instance of the intern class with the values which will then become the paramters inside of the constructor
+
+            // If: the user chooses to add more members, the addMembers() above will begin the buildRoster() again.
+            // Else: the user chooses to generate roster.
+            // The render(roster) function (required above) passes the user-data into the roster[] array containing all member objects.
+            // Render() will generate and return a block of HTML including templated divs for each employee.
+            // Creating a new instance of the member-class's with the values which will then become the paramters inside of the constructor.
+
             if (response.role === "Intern") {
                 let newIntern = new Intern(response.name, response.email, response.id, response.school);
                 roster.push(newIntern);
@@ -145,25 +156,3 @@ function buildRoster() {
 
 buildRoster();
 
-// Write code to use inquirer to gather information about the development team members,
-// and to create objects for each team member (using the correct classes as blueprints!)
-
-// After the user has input all employees desired, call the `render` function (required
-// above) and pass in an array containing all employee objects; the `render` function will
-// generate and return a block of HTML including templated divs for each employee!
-
-// After you have your html, you"re now ready to create an HTML file using the HTML
-// returned from the `render` function. Now write it to a file named `team.html` in the
-// `output` folder. You can use the variable `outputPath` above target this location.
-// Hint: you may need to check if the `output` folder exists and create it if it
-// does not.
-
-// HINT: each employee type (manager, engineer, or intern) has slightly different
-// information; write your code to ask different questions via inquirer depending on
-// employee type.
-
-// HINT: make sure to build out your classes first! Remember that your Manager, Engineer,
-// and Intern classes should all extend from a class named Employee; see the directions
-// for further information. Be sure to test out each class and verify it generates an
-// object with the correct structure and methods. This structure will be crucial in order
-// for the provided `render` function to work! ```

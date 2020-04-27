@@ -1,20 +1,24 @@
-// TODO: Write code to define and export the Intern class.  HINT: This class should inherit from Employee.
 const Employee = require("./Employee");
-// creating a subclass based on the parent "Employee"
+
+// Importing the parent class "Employee".
+// Defining and exporting the Intern class wich will inherit from Employee.
+// Creating a subclass Intern based on the parent "Employee".
 class Intern extends Employee {
-    //creating a new constructor with paramaters
+
+    // Creating a new constructor with paramaters.
+    // Super links and sets the values of the parent constructor.
+    // Methods used to retrieve the school and role values.
+    
     constructor(name, email, id, school) {
-        // super links and sets the values of the parent constructor
-        super(name, email, id) ;//super enables the connection to the parent constructor
+        super(name, email, id) ;
         this.school = school;
     }
-    getSchool() { // method to retrieve the school value
+    getSchool() {
         return this.school;
     }
     getRole() {
         return "Intern";
     }
 }
-// console.log(intern.getEmail())
 
 module.exports = Intern;

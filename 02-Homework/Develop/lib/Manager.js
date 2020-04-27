@@ -1,21 +1,24 @@
-// TODO: Write code to define and export the Manager class. HINT: This class should inherit from Employee.
 var Employee = require("./Employee");
-// creating a subclass based on the parent "Employee"
+
+// Importing the parent class "Employee".
+// Defining and exporting the Manager class wich will inherit from Employee.
+// Creating a subclass Manager based on the parent "Employee".
 class Manager extends Employee {
-    //creating a new constructor with paramaters
+
+    // Creating a new constructor with paramaters.
+    // Super links and sets the values of the parent constructor.
+    // Methods used to retrieve the office and role values.
+
     constructor(name, email, id, officeNumber) {
-        // super links and sets the values of the parent constructor
-        super(name, email, id) //super enables the connection to the parent constructor
+        super(name, email, id)
         this.officeNumber = officeNumber
     }
-    getOfficeNumber() { // method to retrieve the username value
+    getOfficeNumber() {
         return this.officeNumber
     }
     getRole() {
         return "Manager";
     }
 }
-
-// console.log(manager.getEmail())
 
 module.exports = Manager;

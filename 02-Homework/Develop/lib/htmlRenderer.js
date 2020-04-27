@@ -7,7 +7,7 @@ const render = employees => {
   const html = [];
 
   html.push(employees
-    .filter(employee => employee.getRole() === "Manager") // filter runs a for loop, which pushes the current element into a separate array
+    .filter(employee => employee.getRole() === "Manager") // Filter runs a for loop, which pushes the current element into a separate array.
     .map(manager => renderManager(manager))
   );
   html.push(employees
@@ -39,7 +39,7 @@ const renderEngineer = engineer => {
   template = replacePlaceholders(template, "role", engineer.getRole());
   template = replacePlaceholders(template, "email", engineer.getEmail());
   template = replacePlaceholders(template, "id", engineer.getId());
-  template = replacePlaceholders(template, "github", engineer.getUserName());
+  template = replacePlaceholders(template, "github", engineer.getGithub());
   return template;
 };
 
